@@ -1,0 +1,46 @@
+package controller;
+
+import dao.BookDAO;
+import dao.ReservationDAO;
+import model.Book;
+import model.Reservation;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.*;
+import java.io.IOException;
+import java.util.List;
+
+@WebServlet("/UserDashboardServlet")
+public class UserDashboardServlet extends HttpServlet {
+
+    private BookDAO bookDAO;
+    private ReservationDAO reservationDAO;
+
+    @Override
+    public void init() {
+        bookDAO = new BookDAO();
+        reservationDAO = new ReservationDAO();
+    }
+
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
+        HttpSession session = request.getSession(false);
+        if (session == null || !"user".equals(session.getAttribute("userRole"))) {
+            response.sendRedirect("jsp/login.jsp");
+            return;
+        }
+
+        String userName = (String) session.getAttribute("userName");
+
+        List<Book> books = bookDAO.getAllBooks();
+        List<Reservation> reservations = reservationDAO.getReservationsByUser(userName);
+
+        request.setAttribute("books", books);
+        request.setAttribute("reservations", reservations);
+
+        request.getRequestDispatcher("jsp/user.jsp").forward(request, response);
+    }
+}

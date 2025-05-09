@@ -1,0 +1,213 @@
+package dao;
+
+import model.Book;
+import util.DBConnection;
+
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+
+public class BookDAO {
+
+    // Fetch all books from the database
+    public List<Book> getAllBooks() {
+        List<Book> books = new ArrayList<>();
+        String sql = "SELECT * FROM books";
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                Book b = new Book();
+                b.setId(rs.getInt("id"));
+                b.setTitle(rs.getString("title"));
+                b.setAuthor(rs.getString("author"));
+                b.setCategory(rs.getString("category"));
+                b.setStatus(rs.getString("status"));
+                b.setStock(rs.getInt("stock")); // ✅ added
+                books.add(b);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return books;
+    }
+
+    // Add a new book
+    public boolean addBook(Book book) {
+        String sql = "INSERT INTO books (title, author, category, status, stock) VALUES (?, ?, ?, 'available', ?)";
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, book.getTitle());
+            stmt.setString(2, book.getAuthor());
+            stmt.setString(3, book.getCategory());
+            stmt.setInt(4, book.getStock());  // ✅ fixed parameter index
+
+            return stmt.executeUpdate() > 0;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    // Get a single book by ID
+    public Book getBookById(int id) {
+        String sql = "SELECT * FROM books WHERE id = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, id);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                Book b = new Book();
+                b.setId(rs.getInt("id"));
+                b.setTitle(rs.getString("title"));
+                b.setAuthor(rs.getString("author"));
+                b.setCategory(rs.getString("category"));
+                b.setStatus(rs.getString("status"));
+                b.setStock(rs.getInt("stock")); // ✅ ensure stock is retrieved
+                return b;
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    // Update book
+    public boolean updateBook(Book book) {
+        String sql = "UPDATE books SET title = ?, author = ?, category = ?, status = ?, stock = ? WHERE id = ?";
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, book.getTitle());
+            stmt.setString(2, book.getAuthor());
+            stmt.setString(3, book.getCategory());
+            stmt.setString(4, book.getStatus());
+            stmt.setInt(5, book.getStock()); // ✅ added
+            stmt.setInt(6, book.getId());
+
+            return stmt.executeUpdate() > 0;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    // Delete book
+    public boolean deleteBook(int id) {
+        String sql = "DELETE FROM books WHERE id = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, id);
+            return stmt.executeUpdate() > 0;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    // Count total books
+    public int getTotalBooks() {
+        String sql = "SELECT COUNT(*) FROM books";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            if (rs.next()) return rs.getInt(1);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    // Get all available books
+    public List<Book> getAvailableBooks() {
+        List<Book> books = new ArrayList<>();
+        String sql = "SELECT * FROM books WHERE status = 'available'";
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                Book b = new Book();
+                b.setId(rs.getInt("id"));
+                b.setTitle(rs.getString("title"));
+                b.setAuthor(rs.getString("author"));
+                b.setCategory(rs.getString("category"));
+                b.setStatus(rs.getString("status"));
+                b.setStock(rs.getInt("stock")); // ✅ added
+                books.add(b);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return books;
+    }
+    public List<Book> searchBooks(String keyword) {
+        List<Book> books = new ArrayList<>();
+        String sql = "SELECT * FROM books WHERE status = 'available' AND " +
+                     "(title LIKE ? OR author LIKE ? OR category LIKE ?)";
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            String search = "%" + keyword + "%";
+            stmt.setString(1, search);
+            stmt.setString(2, search);
+            stmt.setString(3, search);
+
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                Book b = new Book();
+                b.setId(rs.getInt("id"));
+                b.setTitle(rs.getString("title"));
+                b.setAuthor(rs.getString("author"));
+                b.setCategory(rs.getString("category"));
+                b.setStatus(rs.getString("status"));
+                b.setStock(rs.getInt("stock"));
+                books.add(b);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return books;
+    }
+    public int getAvailableBooksCount() {
+        String sql = "SELECT COUNT(*) FROM books WHERE status = 'available'";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+            if (rs.next()) return rs.getInt(1);
+        } catch (Exception e) { e.printStackTrace(); }
+        return 0;
+    }
+
+    public int getUnavailableBooksCount() {
+        String sql = "SELECT COUNT(*) FROM books WHERE status = 'unavailable'";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+            if (rs.next()) return rs.getInt(1);
+        } catch (Exception e) { e.printStackTrace(); }
+        return 0;
+    }
+
+}

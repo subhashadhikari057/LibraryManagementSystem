@@ -1,0 +1,52 @@
+package controller;
+
+import util.DBUtil;
+import util.HashUtil;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.*;
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+
+@WebServlet("/RegisterServlet")
+public class RegisterServlet extends HttpServlet {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
+        String name = request.getParameter("name");
+        String email = request.getParameter("email");
+        String password = request.getParameter("password");
+
+        // ✅ Validation: Check empty fields
+        if (name == null || name.trim().isEmpty() ||
+            email == null || email.trim().isEmpty() ||
+            password == null || password.trim().isEmpty()) {
+            response.sendRedirect("jsp/register.jsp?error=All fields are required");
+            return;
+        }
+
+        try (Connection conn = DBUtil.getConnection()) {
+            String hashedPassword = HashUtil.md5(password); // 🔒 Encrypt password
+
+            String sql = "INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, 'user')";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setString(1, name);
+            stmt.setString(2, email);
+            stmt.setString(3, hashedPassword);
+
+            int rows = stmt.executeUpdate();
+
+            if (rows > 0) {
+                response.sendRedirect("jsp/login.jsp");
+            } else {
+                response.sendRedirect("jsp/register.jsp?error=Registration failed");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.sendRedirect("jsp/register.jsp?error=Something went wrong");
+        }
+    }
+}

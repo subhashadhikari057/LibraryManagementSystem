@@ -1,0 +1,114 @@
+<%@ page import="model.User" %>
+<%@ page import="model.Book" %>
+<%@ page import="dao.BookDAO" %>
+<%@ page import="java.util.List" %>
+<%@ page session="true" %>
+<%
+    User user = (User) session.getAttribute("user");
+    if (user == null || !"admin".equals(user.getRole())) {
+        response.sendRedirect("login.jsp");
+        return;
+    }
+
+    int bookId = Integer.parseInt(request.getParameter("id"));
+    BookDAO bookDAO = new BookDAO();
+    Book book = bookDAO.getBookById(bookId);
+    if (book == null) {
+        response.sendRedirect("view-books.jsp");
+        return;
+    }
+%>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Book</title>
+    <style>
+        body {
+            font-family: Arial;
+            background: #f4f7fa;
+            padding: 40px;
+        }
+        .form-container {
+            max-width: 500px;
+            margin: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 8px rgba(0,0,0,0.1);
+        }
+        h2 {
+            text-align: center;
+            color: #004aac;
+        }
+        label {
+            display: block;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+        input[type="text"],
+        select {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        button {
+            margin-top: 20px;
+            background: #004aac;
+            color: white;
+            padding: 10px 18px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 16px;
+        }
+        button:hover {
+            background: #003377;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h2>Edit Book</h2>
+        <form action="../EditBookServlet" method="post">
+            <input type="hidden" name="id" value="<%= book.getId() %>">
+
+            <label>Title:</label>
+            <input type="text" name="title" value="<%= book.getTitle() %>" required>
+
+            <label>Author:</label>
+            <input type="text" name="author" value="<%= book.getAuthor() %>" required>
+
+            <label>Category:</label>
+            <input type="text" name="category" value="<%= book.getCategory() %>" required>
+
+            <label>Status:</label>
+            <select name="status" required>
+                <option value="available" <%= book.getStatus().equals("available") ? "selected" : "" %>>Available</option>
+                <option value="unavailable" <%= book.getStatus().equals("unavailable") ? "selected" : "" %>>Unavailable</option>
+            </select>
+            <label>Stock:</label>
+<input type="number" name="stock" value="<%= book.getStock() %>" min="0" required>
+
+            <button type="submit">Update Book</button>
+        </form>
+
+        <div style="text-align:center; margin-top: 20px;">
+            <a href="admin.jsp" style="
+                display: inline-block;
+                background-color: #ccc;
+                padding: 10px 20px;
+                border-radius: 5px;
+                text-decoration: none;
+                font-weight: bold;
+                color: #000;
+            ">
+                Back to Dashboard
+            </a>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,49 @@
+package controller;
+
+import util.DBConnection;
+import model.User;
+
+import javax.servlet.*;
+import javax.servlet.http.*;
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+
+public class ReserveBookServlet extends HttpServlet {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
+
+        if (user == null || !"user".equals(user.getRole())) {
+            response.sendRedirect("login.jsp");
+            return;
+        }
+
+        int userId = user.getId();
+        int bookId = Integer.parseInt(request.getParameter("bookId"));
+
+        String insertSql = "INSERT INTO reservations (user_id, book_id, reserved_on) VALUES (?, ?, NOW())";
+        String updateBookSql = "UPDATE books SET status = 'unavailable' WHERE id = ?";
+
+        try (Connection conn = DBConnection.getConnection()) {
+            // Insert into reservations table
+            PreparedStatement insertStmt = conn.prepareStatement(insertSql);
+            insertStmt.setInt(1, userId);
+            insertStmt.setInt(2, bookId);
+            insertStmt.executeUpdate();
+
+            // Update book status
+            PreparedStatement updateStmt = conn.prepareStatement(updateBookSql);
+            updateStmt.setInt(1, bookId);
+            updateStmt.executeUpdate();
+
+            response.sendRedirect("jsp/view-available-books.jsp?msg=reserved");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.sendRedirect("jsp/view-available-books.jsp?msg=error");
+        }
+    }
+}

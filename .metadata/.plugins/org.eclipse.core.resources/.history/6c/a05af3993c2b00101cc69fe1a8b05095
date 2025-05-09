@@ -1,0 +1,115 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="javax.servlet.http.HttpSession" %>
+
+<%
+    String name = (String) session.getAttribute("userName");
+    String role = (String) session.getAttribute("userRole");
+
+    if (name == null || !"admin".equals(role)) {
+        response.sendRedirect("login.jsp");
+        return;
+    }
+
+    if (request.getAttribute("totalBooks") == null ||
+        request.getAttribute("totalReservations") == null ||
+        request.getAttribute("mostReservedBook") == null) {
+        response.sendRedirect("../AdminDashboardServlet");
+        return;
+    }
+
+    Integer totalBooks = (Integer) request.getAttribute("totalBooks");
+    Integer totalReservations = (Integer) request.getAttribute("totalReservations");
+    String mostReservedBook = (String) request.getAttribute("mostReservedBook");
+%>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f0f4f7;
+            text-align: center;
+            padding: 50px;
+        }
+        h1 {
+            color: #333;
+        }
+        .metrics {
+            margin-top: 30px;
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+        }
+        .metric-box {
+            background: white;
+            padding: 20px 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .metric-box h2 {
+            margin: 0;
+            font-size: 22px;
+            color: #007bff;
+        }
+        .metric-box p {
+            font-size: 18px;
+            color: #333;
+        }
+        .btn-group {
+            margin-top: 40px;
+        }
+        .btn-group a {
+            display: inline-block;
+            margin: 10px;
+            padding: 12px 24px;
+            background-color: #007bff;
+            color: white;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .btn-group a:hover {
+            background-color: #0056b3;
+        }
+        .logout {
+            background-color: #dc3545;
+        }
+        .logout:hover {
+            background-color: #b02a37;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Welcome, <%= name %>!</h1>
+    <p>This is the Admin Dashboard.</p>
+
+    <div class="metrics">
+        <div class="metric-box">
+            <h2>Total Books</h2>
+            <p><%= totalBooks != null ? totalBooks : "N/A" %></p>
+        </div>
+        <div class="metric-box">
+            <h2>Total Reservations</h2>
+            <p><%= totalReservations != null ? totalReservations : "N/A" %></p>
+        </div>
+        <div class="metric-box">
+            <h2>Most Reserved Book</h2>
+            <p><%= mostReservedBook != null ? mostReservedBook : "N/A" %></p>
+        </div>
+    </div>
+
+    <div class="btn-group">
+        <a href="../BookServlet">📚 Manage Books</a>
+        <a href="logout.jsp" class="logout">🚪 Logout</a>
+        <hr style="margin-top: 40px;">
+        <div style="text-align: center;">
+            <a href="about.jsp">About</a> |
+            <a href="contact.jsp">Contact</a>
+        </div>
+    </div>
+
+</body>
+</html>

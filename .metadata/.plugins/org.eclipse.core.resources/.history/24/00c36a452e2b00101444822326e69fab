@@ -1,0 +1,27 @@
+package dao;
+
+import model.Reservation;
+import util.DBUtil;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+
+public class ReservationDAO {
+
+    public void addReservation(Reservation reservation) {
+        String sql = "INSERT INTO reservations (book_id, user_name, reservation_date) VALUES (?, ?, ?)";
+
+        try (Connection conn = DBUtil.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, reservation.getBookId());
+            stmt.setString(2, reservation.getUserName());
+            stmt.setString(3, reservation.getReservationDate());
+
+            stmt.executeUpdate();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}

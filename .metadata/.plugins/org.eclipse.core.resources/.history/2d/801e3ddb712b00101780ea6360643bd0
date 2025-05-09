@@ -1,0 +1,60 @@
+<%@ page import="model.User" %>
+<%@ page session="true" %>
+<%
+    User user = (User) session.getAttribute("user");
+    if (user == null || !"admin".equals(user.getRole())) {
+        response.sendRedirect("login.jsp");
+        return;
+    }
+%>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f0f4f8;
+            padding: 50px;
+        }
+        .dashboard {
+            max-width: 600px;
+            margin: auto;
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 0 8px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        h2 {
+            color: #004aac;
+        }
+        a.button {
+            display: inline-block;
+            margin: 15px 10px;
+            padding: 12px 24px;
+            background: #004aac;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 16px;
+        }
+        a.button:hover {
+            background: #003377;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <h2>Welcome, <%= user.getFullName() %> (Admin)</h2>
+        <p>Select an action below:</p>
+
+        <a class="button" href="add-book.jsp">➕ Add Book</a>
+        <a class="button" href="view-books.jsp">📚 View / Edit / Delete Books</a>
+        <a class="button" href="reports.jsp">📈 View Reports</a>
+        <a class="button" href="manage-users.jsp">👥 Manage Users</a>
+    </div>
+</body>
+</html>

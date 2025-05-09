@@ -1,0 +1,173 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="javax.servlet.http.HttpSession" %>
+<%@ page import="model.Book" %>
+<%@ page import="model.Reservation" %>
+<%@ page import="java.util.List" %>
+
+<%
+    String name = (String) session.getAttribute("userName");
+    String role = (String) session.getAttribute("userRole");
+
+    if (name == null || !"user".equals(role)) {
+        response.sendRedirect("login.jsp");
+        return;
+    }
+
+    String msg = (String) request.getAttribute("msg");
+    String error = (String) request.getAttribute("error");
+%>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>User Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f1f1f1;
+            padding: 30px;
+        }
+        h1, h2 {
+            text-align: center;
+        }
+        .logout {
+            display: block;
+            text-align: center;
+            margin-bottom: 20px;
+            font-weight: bold;
+            text-decoration: none;
+            color: #007BFF;
+        }
+        .msg-box {
+            width: 90%;
+            margin: 10px auto;
+            padding: 12px;
+            border-radius: 6px;
+            text-align: center;
+            font-weight: bold;
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+        }
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        table {
+            width: 90%;
+            margin: 20px auto;
+            border-collapse: collapse;
+            background: white;
+        }
+        th, td {
+            padding: 12px;
+            border: 1px solid #ccc;
+            text-align: center;
+        }
+        th {
+            background: #4CAF50;
+            color: white;
+        }
+        .reserve-btn, .unreserve-btn {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .reserve-btn {
+            background-color: #007BFF;
+            color: white;
+        }
+        .reserve-btn:hover {
+            background-color: #0056b3;
+        }
+        .unreserve-btn {
+            background-color: #dc3545;
+            color: white;
+        }
+        .unreserve-btn:hover {
+            background-color: #b52a2a;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Welcome, <%= name %>!</h1>
+<a href="jsp/logout.jsp" class="logout">Logout</a>
+<hr style="margin-top: 40px;">
+<div style="text-align: center;">
+    <a href="<%= request.getContextPath() %>/jsp/about.jsp">About</a> |
+<a href="<%= request.getContextPath() %>/jsp/contact.jsp">Contact</a>
+
+</div>
+
+
+<% if (msg != null) { %>
+    <div class="msg-box success"><%= msg %></div>
+<% } %>
+<% if (error != null) { %>
+    <div class="msg-box error"><%= error %></div>
+<% } %>
+
+<h2>Available Books</h2>
+<%
+    List<Book> books = (List<Book>) request.getAttribute("books");
+    if (books != null && !books.isEmpty()) {
+%>
+    <table>
+        <tr>
+            <th>Title</th><th>Author</th><th>Category</th><th>Quantity</th><th>Action</th>
+        </tr>
+        <% for (Book book : books) { %>
+        <tr>
+            <td><%= book.getTitle() %></td>
+            <td><%= book.getAuthor() %></td>
+            <td><%= book.getCategory() %></td>
+            <td><%= book.getQuantity() %></td>
+            <td>
+                <% if (book.getQuantity() > 0) { %>
+                    <form action="ReserveServlet" method="post" style="margin: 0;">
+                        <input type="hidden" name="bookId" value="<%= book.getId() %>">
+                        <button type="submit" class="reserve-btn">Reserve</button>
+                    </form>
+                <% } else { %>
+                    <span style="color: red;">Not Available</span>
+                <% } %>
+            </td>
+        </tr>
+        <% } %>
+    </table>
+<% } else { %>
+    <p style="text-align: center;">No books found.</p>
+<% } %>
+
+<h2>Your Reservations</h2>
+<%
+    List<Reservation> reservations = (List<Reservation>) request.getAttribute("reservations");
+    if (reservations != null && !reservations.isEmpty()) {
+%>
+    <table>
+        <tr>
+            <th>Book Title</th><th>Reserved On</th><th>Action</th>
+        </tr>
+        <% for (Reservation res : reservations) { %>
+        <tr>
+            <td><%= res.getBookTitle() %></td>
+            <td><%= res.getReservationDate() %></td>
+            <td>
+                <form action="UnreserveServlet" method="post" style="margin: 0;">
+                    <input type="hidden" name="reservationId" value="<%= res.getId() %>">
+                    <button type="submit" class="unreserve-btn">Unreserve</button>
+                </form>
+            </td>
+        </tr>
+        <% } %>
+    </table>
+<% } else { %>
+    <p style="text-align: center;">You have not reserved any books.</p>
+<% } %>
+
+</body>
+</html>

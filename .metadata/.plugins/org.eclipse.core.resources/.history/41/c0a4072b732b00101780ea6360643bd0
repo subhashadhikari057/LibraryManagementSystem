@@ -1,0 +1,55 @@
+package dao;
+
+import model.Book;
+import util.DBConnection;
+
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+
+public class BookDAO {
+
+    // Fetch all books from the database
+    public List<Book> getAllBooks() {
+        List<Book> books = new ArrayList<>();
+        String sql = "SELECT * FROM books";
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                Book b = new Book();
+                b.setId(rs.getInt("id"));
+                b.setTitle(rs.getString("title"));
+                b.setAuthor(rs.getString("author"));
+                b.setCategory(rs.getString("category"));
+                b.setStatus(rs.getString("status"));
+                books.add(b);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return books;
+    }
+
+    // Add a new book with status
+    public boolean addBook(Book book) {
+        String sql = "INSERT INTO books (title, author, category, status) VALUES (?, ?, ?, ?)";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, book.getTitle());
+            stmt.setString(2, book.getAuthor());
+            stmt.setString(3, book.getCategory());
+            stmt.setString(4, book.getStatus()); // now using dynamic status from form
+
+            return stmt.executeUpdate() > 0;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+}

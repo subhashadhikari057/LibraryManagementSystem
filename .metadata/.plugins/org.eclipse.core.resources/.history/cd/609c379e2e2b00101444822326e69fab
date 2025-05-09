@@ -1,0 +1,82 @@
+<%@ page import="model.Book" %>
+<%@ page import="java.util.List" %>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Book Catalog - Reserve</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f1f1f1;
+            padding: 30px;
+        }
+        h2 {
+            text-align: center;
+        }
+        table {
+            width: 90%;
+            margin: auto;
+            border-collapse: collapse;
+            background: white;
+        }
+        th, td {
+            padding: 12px;
+            border: 1px solid #ccc;
+            text-align: center;
+        }
+        th {
+            background: #4CAF50;
+            color: white;
+        }
+        .reserve-btn {
+            background-color: #007BFF;
+            color: white;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .reserve-btn:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+<h2>Available Books</h2>
+
+<%
+    List<Book> books = (List<Book>) request.getAttribute("books");
+    if (books != null && !books.isEmpty()) {
+%>
+    <table>
+        <tr>
+            <th>Title</th><th>Author</th><th>Category</th><th>Quantity</th><th>Action</th>
+        </tr>
+        <% for (Book book : books) { %>
+            <tr>
+                <td><%= book.getTitle() %></td>
+                <td><%= book.getAuthor() %></td>
+                <td><%= book.getCategory() %></td>
+                <td><%= book.getQuantity() %></td>
+                <td>
+                    <% if (book.getQuantity() > 0) { %>
+                        <form action="../ReserveServlet" method="post" style="margin: 0;">
+                            <input type="hidden" name="bookId" value="<%= book.getId() %>">
+                            <button type="submit" class="reserve-btn">Reserve</button>
+                        </form>
+                    <% } else { %>
+                        <span style="color: red;">Not Available</span>
+                    <% } %>
+                </td>
+            </tr>
+        <% } %>
+    </table>
+<% } else { %>
+    <p style="text-align: center;">No books found.</p>
+<% } %>
+
+</body>
+</html>

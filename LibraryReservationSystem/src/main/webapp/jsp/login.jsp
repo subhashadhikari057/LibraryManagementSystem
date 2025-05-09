@@ -1,0 +1,95 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Login - Library System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f0f4f8;
+            margin: 0;
+            padding: 0;
+        }
+        .login-container {
+            max-width: 400px;
+            margin: 80px auto;
+            padding: 30px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h2 {
+            text-align: center;
+            color: #004aac;
+        }
+        label {
+            display: block;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+        input[type="email"],
+        input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+        }
+        button {
+            margin-top: 20px;
+            width: 100%;
+            background-color: #004aac;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #003377;
+        }
+        .error {
+            color: red;
+            text-align: center;
+            margin-top: 10px;
+        }
+        a {
+    color: #004aac;
+    text-decoration: none;
+    font-weight: bold;
+}
+a:hover {
+    text-decoration: underline;
+}
+        
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <h2>Library Login</h2>
+        <form action="../LoginServlet" method="post">
+            <label for="email">Email:</label>
+            <input type="email" name="email" required>
+
+            <label for="password">Password:</label>
+            <input type="password" name="password" required>
+
+            <button type="submit">Login</button>
+        </form>
+        <p style="text-align:center; margin-top: 20px;">
+    Don't have an account?
+    <a href="register.jsp">Register here</a>
+</p>
+        <%
+            String error = request.getParameter("error");
+            if (error != null) {
+        %>
+            <div class="error">Invalid email or password.</div>
+        <%
+            }
+        %>
+    </div>
+</body>
+</html>

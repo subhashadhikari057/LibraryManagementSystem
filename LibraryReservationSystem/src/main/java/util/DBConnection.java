@@ -1,0 +1,29 @@
+package util;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+
+public class DBConnection {
+
+    private static final String URL = "jdbc:mysql://localhost:3306/library_db";
+    private static final String USER = "root"; // change if needed
+    private static final String PASS = "";     // enter your MySQL password here
+
+    public static Connection getConnection() throws SQLException {
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver"); // MySQL 8+
+            return DriverManager.getConnection(URL, USER, PASS);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            throw new SQLException(e);
+        }
+    }
+    public static void cleanup() {
+        try {
+            com.mysql.cj.jdbc.AbandonedConnectionCleanupThread.checkedShutdown();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}

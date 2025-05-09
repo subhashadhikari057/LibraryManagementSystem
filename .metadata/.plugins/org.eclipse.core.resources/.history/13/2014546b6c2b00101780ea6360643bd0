@@ -1,0 +1,35 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Library Reservation System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #e3f2fd;
+            text-align: center;
+            padding-top: 100px;
+        }
+        .button {
+            display: inline-block;
+            padding: 14px 28px;
+            margin: 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #2196f3;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            text-decorat: none;
+        }
+        .button:hover {
+            background-color: #0b7dda;
+        }
+    </style>
+</head>
+<body>
+    <h1>📚 Welcome to the Library Reservation System</h1>
+    <a href="jsp/register.jsp" class="button">Register</a>
+    <a href="jsp/login.jsp" class="button">Login</a>
+</body>
+</html>

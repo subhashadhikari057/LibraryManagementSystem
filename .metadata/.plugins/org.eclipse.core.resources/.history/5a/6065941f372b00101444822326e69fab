@@ -1,0 +1,41 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>About - Library Management System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 40px;
+            background: #f9f9f9;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 8px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #007BFF;
+        }
+        p {
+            font-size: 16px;
+            line-height: 1.7;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>About Our Library System</h1>
+        <p>
+            Our Library Management System is a web-based platform built to streamline library operations and improve the borrowing experience for students. It allows admin users to manage books, track reservations, and oversee user activities, while providing students with a portal to browse, reserve, and manage their books.
+        </p>
+        <p>
+            This system is developed using Java EE, JSP, Servlets, and MySQL following the MVC architecture. It features authentication, role-based access, responsive design, and simple data management through a user-friendly interface.
+        </p>
+    </div>
+</body>
+</html>

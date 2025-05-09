@@ -1,0 +1,87 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Register - Library System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f0f4f8;
+            margin: 0;
+            padding: 0;
+        }
+        .register-container {
+            max-width: 450px;
+            margin: 80px auto;
+            padding: 30px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h2 {
+            text-align: center;
+            color: #004aac;
+        }
+        label {
+            display: block;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+        input[type="text"],
+        input[type="email"],
+        input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+        }
+        button {
+            margin-top: 20px;
+            width: 100%;
+            background-color: #004aac;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #003377;
+        }
+        .error, .success {
+            margin-top: 15px;
+            text-align: center;
+            font-weight: bold;
+        }
+        .error { color: red; }
+        .success { color: green; }
+    </style>
+</head>
+<body>
+    <div class="register-container">
+        <h2>Create Account</h2>
+        <form action="../RegisterServlet" method="post">
+            <label for="fullName">Full Name:</label>
+            <input type="text" name="fullName" required>
+
+            <label for="email">Email:</label>
+            <input type="email" name="email" required>
+
+            <label for="password">Password:</label>
+            <input type="password" name="password" required>
+
+            <button type="submit">Register</button>
+        </form>
+
+        <% String msg = request.getParameter("msg");
+           if ("exists".equals(msg)) { %>
+           <div class="error">User already exists!</div>
+        <% } else if ("success".equals(msg)) { %>
+           <div class="success">Registration successful! Please login.</div>
+        <% } %>
+    </div>
+</body>
+</html>

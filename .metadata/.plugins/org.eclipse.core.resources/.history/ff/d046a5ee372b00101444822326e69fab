@@ -1,0 +1,68 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Contact Us - Library</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f1f1f1;
+            padding: 40px;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #28a745;
+        }
+        label {
+            display: block;
+            margin: 15px 0 5px;
+            font-weight: bold;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+        }
+        button {
+            margin-top: 20px;
+            width: 100%;
+            background: #28a745;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #218838;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Contact Us</h1>
+        <form action="#" method="post">
+            <label>Name:</label>
+            <input type="text" name="name" required>
+
+            <label>Email:</label>
+            <input type="email" name="email" required>
+
+            <label>Message:</label>
+            <textarea name="message" rows="5" required></textarea>
+
+            <button type="submit">Send Message</button>
+        </form>
+    </div>
+</body>
+</html>

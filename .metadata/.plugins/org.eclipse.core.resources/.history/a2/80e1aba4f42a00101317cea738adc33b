@@ -1,0 +1,40 @@
+package controller;
+
+import util.DBUtil;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.*;
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+
+@WebServlet("/RegisterServlet")
+public class RegisterServlet extends HttpServlet {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
+        String name = request.getParameter("name");
+        String email = request.getParameter("email");
+        String password = request.getParameter("password");
+
+        try (Connection conn = DBUtil.getConnection()) {
+            String sql = "INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, 'user')";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setString(1, name);
+            stmt.setString(2, email);
+            stmt.setString(3, password); // 🔒 We’ll encrypt this later
+            int rows = stmt.executeUpdate();
+
+            if (rows > 0) {
+                response.sendRedirect("jsp/login.jsp");
+            } else {
+                response.getWriter().println("❌ Registration failed.");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.getWriter().println("❌ Error: " + e.getMessage());
+        }
+    }
+}

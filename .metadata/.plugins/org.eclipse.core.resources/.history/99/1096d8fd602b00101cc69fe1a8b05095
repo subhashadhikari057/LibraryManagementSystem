@@ -1,0 +1,93 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="javax.servlet.http.HttpSession" %>
+<%
+    String name = (String) session.getAttribute("userName");
+    String role = (String) session.getAttribute("userRole");
+
+    if (name == null || !"admin".equals(role)) {
+        response.sendRedirect("login.jsp");
+        return;
+    }
+
+    Integer totalBooks = (Integer) request.getAttribute("totalBooks");
+    if (totalBooks == null) totalBooks = 0;
+
+    Integer totalReservations = (Integer) request.getAttribute("totalReservations");
+    if (totalReservations == null) totalReservations = 0;
+
+    String mostReservedBook = (String) request.getAttribute("mostReservedBook");
+    if (mostReservedBook == null || mostReservedBook.isEmpty()) mostReservedBook = "No reservations yet";
+%>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard Stats</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #eaeff3;
+            text-align: center;
+            padding: 50px;
+        }
+        h1 {
+            color: #333;
+        }
+        .metrics {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin: 40px 0;
+        }
+        .metric-box {
+            background: white;
+            padding: 25px 35px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .metric-box h2 {
+            margin: 0;
+            color: #007bff;
+            font-size: 22px;
+        }
+        .metric-box p {
+            font-size: 20px;
+            color: #333;
+        }
+        .back-button {
+            display: inline-block;
+            margin-top: 30px;
+            padding: 12px 28px;
+            background-color: #28a745;
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            border-radius: 6px;
+        }
+        .back-button:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>📊 Library Stats</h1>
+
+    <div class="metrics">
+        <div class="metric-box">
+            <h2>Total Books</h2>
+            <p><%= totalBooks %></p>
+        </div>
+        <div class="metric-box">
+            <h2>Total Reservations</h2>
+            <p><%= totalReservations %></p>
+        </div>
+        <div class="metric-box">
+            <h2>Most Reserved Book</h2>
+            <p><%= mostReservedBook %></p>
+        </div>
+    </div>
+
+    <a href="../BookServlet" class="back-button">🔙 Back to Admin Menu</a>
+
+</body>
+</html>

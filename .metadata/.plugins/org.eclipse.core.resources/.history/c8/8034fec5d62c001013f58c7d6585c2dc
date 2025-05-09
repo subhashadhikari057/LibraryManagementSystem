@@ -1,0 +1,63 @@
+<%@ page import="model.User" %>
+<%@ page session="true" %>
+<%
+    User user = (User) session.getAttribute("user");
+    if (user == null || !"user".equals(user.getRole())) {
+        response.sendRedirect("login.jsp");
+        return;
+    }
+%>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>User Dashboard</title>
+    <style>
+        body {
+            font-family: Arial;
+            padding: 40px;
+            background: #f4f7fa;
+        }
+        .card {
+            max-width: 600px;
+            margin: auto;
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        h2 {
+            color: #004aac;
+        }
+        p {
+            margin: 8px 0;
+        }
+        .btn {
+            display: block;
+            background-color: #004aac;
+            color: white;
+            padding: 12px;
+            margin: 12px auto;
+            width: 80%;
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 16px;
+        }
+        .btn:hover {
+            background-color: #003377;
+        }
+    </style>
+</head>
+<body>
+<div class="card">
+    <h2>Welcome, <%= user.getFullName() %></h2>
+    <p>Email: <%= user.getEmail() %></p>
+    <p>You can view and reserve books below.</p>
+
+    <a class="btn" href="view-available-books.jsp">View Available Books</a>
+    <a class="btn" href="my-reservations.jsp">My Reservations</a>
+    <a class="btn" href="login.jsp">Logout</a>
+</div>
+</body>
+</html>

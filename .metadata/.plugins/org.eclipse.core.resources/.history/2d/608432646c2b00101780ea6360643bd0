@@ -1,0 +1,35 @@
+package controller;
+
+import dao.BookDAO;
+import dao.ReservationDAO;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.*;
+import java.io.IOException;
+
+@WebServlet("/DashboardServlet")
+public class DashboardServlet extends HttpServlet {
+
+    private BookDAO bookDAO;
+    private ReservationDAO reservationDAO;
+
+    public void init() {
+        bookDAO = new BookDAO();
+        reservationDAO = new ReservationDAO();
+    }
+
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
+        int totalBooks = bookDAO.getTotalBooks();
+        int totalReservations = reservationDAO.getTotalReservations();
+        String mostReservedBook = reservationDAO.getMostReservedBookTitle();
+
+        request.setAttribute("totalBooks", totalBooks);
+        request.setAttribute("totalReservations", totalReservations);
+        request.setAttribute("mostReservedBook", mostReservedBook);
+
+        request.getRequestDispatcher("jsp/dashboard.jsp").forward(request, response);
+    }
+}

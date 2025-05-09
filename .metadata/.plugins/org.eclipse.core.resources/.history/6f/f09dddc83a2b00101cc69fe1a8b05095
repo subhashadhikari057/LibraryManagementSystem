@@ -1,0 +1,144 @@
+package dao;
+
+import model.Book;
+import util.DBUtil;
+
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+
+public class BookDAO {
+
+    // ✅ 1. Get all books
+    public List<Book> getAllBooks() {
+        List<Book> books = new ArrayList<>();
+
+        try (Connection conn = DBUtil.getConnection()) {
+            String sql = "SELECT * FROM books";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                Book book = new Book(
+                    rs.getInt("id"),
+                    rs.getString("title"),
+                    rs.getString("author"),
+                    rs.getString("category"),
+                    rs.getInt("quantity")
+                );
+                books.add(book);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return books;
+    }
+
+    // ✅ 2. Get single book by ID
+    public Book getBookById(int id) {
+        Book book = null;
+
+        try (Connection conn = DBUtil.getConnection()) {
+            String sql = "SELECT * FROM books WHERE id = ?";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, id);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                book = new Book(
+                    rs.getInt("id"),
+                    rs.getString("title"),
+                    rs.getString("author"),
+                    rs.getString("category"),
+                    rs.getInt("quantity")
+                );
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return book;
+    }
+
+    // ✅ 3. Add new book
+    public boolean addBook(Book book) {
+        try (Connection conn = DBUtil.getConnection()) {
+            String sql = "INSERT INTO books (title, author, category, quantity) VALUES (?, ?, ?, ?)";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setString(1, book.getTitle());
+            stmt.setString(2, book.getAuthor());
+            stmt.setString(3, book.getCategory());
+            stmt.setInt(4, book.getQuantity());
+
+            int rows = stmt.executeUpdate();
+            return rows > 0;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    // ✅ 4. Update book
+    public boolean updateBook(Book book) {
+        try (Connection conn = DBUtil.getConnection()) {
+            String sql = "UPDATE books SET title = ?, author = ?, category = ?, quantity = ? WHERE id = ?";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setString(1, book.getTitle());
+            stmt.setString(2, book.getAuthor());
+            stmt.setString(3, book.getCategory());
+            stmt.setInt(4, book.getQuantity());
+            stmt.setInt(5, book.getId());
+
+            int rows = stmt.executeUpdate();
+            return rows > 0;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    // ✅ 5. Delete book
+    public boolean deleteBook(int id) {
+        try (Connection conn = DBUtil.getConnection()) {
+            String sql = "DELETE FROM books WHERE id = ?";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, id);
+
+            int rows = stmt.executeUpdate();
+            return rows > 0;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    
+    //6.
+ // Inside BookDAO.java
+    public void decreaseQuantity(int bookId) throws SQLException {
+        String sql = "UPDATE books SET quantity = quantity - 1 WHERE id = ? AND quantity > 0";
+        try (Connection conn = DBUtil.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, bookId);
+            stmt.executeUpdate();
+        }
+    }
+ // ✅ Increase book quantity (used after unreserve)
+    public void increaseQuantity(int bookId) {
+        String sql = "UPDATE books SET quantity = quantity + 1 WHERE id = ?";
+        try (Connection conn = DBUtil.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, bookId);
+            stmt.executeUpdate();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}

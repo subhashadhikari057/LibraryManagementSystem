@@ -1,0 +1,72 @@
+package controller;
+
+import util.DBConnection;
+import model.User;
+
+import javax.servlet.*;
+import javax.servlet.http.*;
+import java.io.IOException;
+import java.sql.*;
+
+public class ReserveBookServlet extends HttpServlet {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
+
+        if (user == null || !"user".equals(user.getRole())) {
+            response.sendRedirect("login.jsp");
+            return;
+        }
+
+        int userId = user.getId();
+        int bookId = Integer.parseInt(request.getParameter("bookId"));
+
+        try (Connection conn = DBConnection.getConnection()) {
+
+            // Step 1: Check current stock
+            String getStockSQL = "SELECT stock FROM books WHERE id = ?";
+            PreparedStatement checkStmt = conn.prepareStatement(getStockSQL);
+            checkStmt.setInt(1, bookId);
+            ResultSet rs = checkStmt.executeQuery();
+
+            if (rs.next()) {
+                int stock = rs.getInt("stock");
+
+                if (stock > 0) {
+                    // Step 2: Insert reservation
+                    String insertSQL = "INSERT INTO reservations (user_id, book_id, reserved_on) VALUES (?, ?, NOW())";
+                    PreparedStatement insertStmt = conn.prepareStatement(insertSQL);
+                    insertStmt.setInt(1, userId);
+                    insertStmt.setInt(2, bookId);
+                    insertStmt.executeUpdate();
+
+                    // Step 3: Decrease stock by 1
+                    String updateStockSQL = "UPDATE books SET stock = stock - 1 WHERE id = ?";
+                    PreparedStatement updateStockStmt = conn.prepareStatement(updateStockSQL);
+                    updateStockStmt.setInt(1, bookId);
+                    updateStockStmt.executeUpdate();
+
+                    // Step 4: If stock will be 0, mark as unavailable
+                    if (stock == 1) {
+                        String markUnavailableSQL = "UPDATE books SET status = 'unavailable' WHERE id = ?";
+                        PreparedStatement markStmt = conn.prepareStatement(markUnavailableSQL);
+                        markStmt.setInt(1, bookId);
+                        markStmt.executeUpdate();
+                    }
+
+                    response.sendRedirect("jsp/view-available-books.jsp?msg=reserved");
+
+                } else {
+                    // Stock is already 0
+                    response.sendRedirect("jsp/view-available-books.jsp?msg=nostock");
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.sendRedirect("jsp/view-available-books.jsp?msg=error");
+        }
+    }
+}

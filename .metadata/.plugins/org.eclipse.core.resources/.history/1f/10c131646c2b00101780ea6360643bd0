@@ -1,0 +1,46 @@
+package controller;
+
+import dao.BookDAO;
+import dao.ReservationDAO;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.*;
+import java.io.IOException;
+
+@WebServlet("/AdminDashboardServlet")
+public class AdminDashboardServlet extends HttpServlet {
+
+    private BookDAO bookDAO;
+    private ReservationDAO reservationDAO;
+
+    @Override
+    public void init() {
+        bookDAO = new BookDAO();
+        reservationDAO = new ReservationDAO();
+    }
+
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
+        HttpSession session = request.getSession(false);
+        if (session == null || !"admin".equals(session.getAttribute("userRole"))) {
+            response.sendRedirect("login.jsp");
+            return;
+        }
+
+        // ✅ Fetch admin dashboard metrics
+        int totalBooks = bookDAO.getTotalBooks();
+        int totalReservations = reservationDAO.getTotalReservations();
+        String mostReservedBook = reservationDAO.getMostReservedBookTitle();
+
+        // ✅ Set data as request attributes
+        request.setAttribute("totalBooks", totalBooks);
+        request.setAttribute("totalReservations", totalReservations);
+        request.setAttribute("mostReservedBook", mostReservedBook);
+
+        // ✅ Forward to admin.jsp
+        request.getRequestDispatcher("jsp/admin.jsp").forward(request, response);
+    }
+}

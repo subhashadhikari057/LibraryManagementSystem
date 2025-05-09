@@ -1,0 +1,33 @@
+package controller;
+
+import dao.ContactDAO;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.*;
+import java.io.IOException;
+
+@WebServlet("/ContactServlet")
+public class ContactServlet extends HttpServlet {
+
+    private ContactDAO contactDAO;
+
+    public void init() {
+        contactDAO = new ContactDAO();
+    }
+
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
+        String name = request.getParameter("name");
+        String email = request.getParameter("email");
+        String subject = request.getParameter("subject");
+        String message = request.getParameter("message");
+
+        // Save to database
+        contactDAO.saveMessage(name, email, subject, message);
+
+        // Redirect with success message
+        response.sendRedirect("jsp/contact.jsp?msg=Message sent successfully");
+    }
+}

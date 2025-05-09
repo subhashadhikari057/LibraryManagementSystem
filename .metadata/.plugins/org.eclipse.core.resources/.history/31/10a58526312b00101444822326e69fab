@@ -1,0 +1,55 @@
+package controller;
+
+import dao.BookDAO;
+import dao.ReservationDAO;
+import model.Reservation;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.*;
+import java.io.IOException;
+import java.time.LocalDate;
+
+@WebServlet("/ReserveServlet")
+public class ReserveServlet extends HttpServlet {
+
+    private ReservationDAO reservationDAO;
+    private BookDAO bookDAO;
+
+    public void init() {
+        reservationDAO = new ReservationDAO();
+        bookDAO = new BookDAO();
+    }
+
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
+        try {
+            int bookId = Integer.parseInt(request.getParameter("bookId"));
+            HttpSession session = request.getSession();
+            String userName = (String) session.getAttribute("userName"); // assumed stored at login
+
+            if (userName == null) {
+                response.sendRedirect("login.jsp");
+                return;
+            }
+
+            Reservation reservation = new Reservation();
+            reservation.setBookId(bookId);
+            reservation.setUserName(userName);
+            reservation.setReservationDate(LocalDate.now().toString());
+
+            reservationDAO.addReservation(reservation);
+
+            // Optional: decrease book quantity
+            bookDAO.decreaseQuantity(bookId);
+
+            // Redirect back to book list
+            response.sendRedirect("BookServlet?user=true");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.sendRedirect("jsp/user-dashboard.jsp?error=Reservation failed");
+        }
+    }
+}

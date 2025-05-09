@@ -1,0 +1,52 @@
+package dao;
+
+import model.Book;
+import util.DBConnection;
+
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+
+public class BookDAO {
+
+    public List<Book> getAllBooks() {
+        List<Book> books = new ArrayList<>();
+        String sql = "SELECT * FROM books";
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                Book b = new Book();
+                b.setId(rs.getInt("id"));
+                b.setTitle(rs.getString("title"));
+                b.setAuthor(rs.getString("author"));
+                b.setCategory(rs.getString("category"));
+                b.setStatus(rs.getString("status"));
+                books.add(b);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return books;
+    }
+
+    public boolean addBook(Book book) {
+        String sql = "INSERT INTO books (title, author, category, status) VALUES (?, ?, ?, 'available')";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, book.getTitle());
+            stmt.setString(2, book.getAuthor());
+            stmt.setString(3, book.getCategory());
+
+            return stmt.executeUpdate() > 0;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+}

@@ -1,0 +1,44 @@
+package controller;
+
+import dao.BookDAO;
+import dao.ReservationDAO;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.*;
+import java.io.IOException;
+
+@WebServlet("/UnreserveServlet")
+public class UnreserveServlet extends HttpServlet {
+    private ReservationDAO reservationDAO;
+    private BookDAO bookDAO;
+
+    @Override
+    public void init() {
+        reservationDAO = new ReservationDAO();
+        bookDAO = new BookDAO();
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        try {
+            int reservationId = Integer.parseInt(request.getParameter("reservationId"));
+
+            // Get bookId before deletion
+            int bookId = reservationDAO.getBookIdByReservationId(reservationId);
+
+            // Delete reservation and restore book quantity
+            reservationDAO.deleteReservation(reservationId);
+            bookDAO.increaseQuantity(bookId);
+
+            // ✅ Redirect with success message
+            response.sendRedirect("UserDashboardServlet?msg=Book unreserved successfully");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            // ❌ Redirect with error message
+            response.sendRedirect("UserDashboardServlet?error=Unreserve failed");
+        }
+    }
+}

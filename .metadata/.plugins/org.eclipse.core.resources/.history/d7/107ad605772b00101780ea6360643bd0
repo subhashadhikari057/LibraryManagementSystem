@@ -1,0 +1,86 @@
+<%@ page import="model.User, dao.UserDAO, java.util.List" %>
+<%@ page session="true" %>
+<%
+    User admin = (User) session.getAttribute("user");
+    if (admin == null || !"admin".equals(admin.getRole())) {
+        response.sendRedirect("login.jsp");
+        return;
+    }
+
+    UserDAO userDAO = new UserDAO();
+    List<User> users = userDAO.getAllUsers();
+%>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Manage Users</title>
+    <style>
+        body {
+            font-family: Arial;
+            background: #f4f7fa;
+            padding: 30px;
+        }
+        table {
+            width: 80%;
+            margin: auto;
+            border-collapse: collapse;
+            background: white;
+            box-shadow: 0 0 8px rgba(0,0,0,0.1);
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border: 1px solid #ccc;
+        }
+        th {
+            background: #004aac;
+            color: white;
+        }
+        h2 {
+            text-align: center;
+            color: #004aac;
+        }
+        .back-btn {
+            display: block;
+            text-align: center;
+            margin-top: 25px;
+        }
+        .back-btn a {
+            background: #ccc;
+            padding: 10px 20px;
+            text-decoration: none;
+            color: black;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h2>Registered Users</h2>
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Full Name</th>
+            <th>Email</th>
+            <th>Role</th>
+        </tr>
+        <%
+            for (User u : users) {
+        %>
+        <tr>
+            <td><%= u.getId() %></td>
+            <td><%= u.getFullName() %></td>
+            <td><%= u.getEmail() %></td>
+            <td><%= u.getRole() %></td>
+        </tr>
+        <%
+            }
+        %>
+    </table>
+
+    <div class="back-btn">
+        <a href="admin.jsp">Back to Dashboard</a>
+    </div>
+</body>
+</html>

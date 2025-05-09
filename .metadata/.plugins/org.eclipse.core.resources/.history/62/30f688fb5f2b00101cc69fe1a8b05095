@@ -1,0 +1,86 @@
+package controller;
+
+import dao.BookDAO;
+import model.Book;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.*;
+import java.io.IOException;
+import java.util.List;
+
+@WebServlet("/BookServlet")
+public class BookServlet extends HttpServlet {
+    private BookDAO bookDAO;
+
+    public void init() {
+        bookDAO = new BookDAO();
+    }
+
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
+        String action = request.getParameter("action");
+
+        try {
+            if ("edit".equals(action)) {
+                int id = Integer.parseInt(request.getParameter("id"));
+                Book book = bookDAO.getBookById(id);
+                request.setAttribute("book", book);
+                request.getRequestDispatcher("jsp/edit-book.jsp").forward(request, response);
+
+            } else if ("delete".equals(action)) {
+                int id = Integer.parseInt(request.getParameter("id"));
+                bookDAO.deleteBook(id);
+                response.sendRedirect("BookServlet");
+
+            } else {
+                // Show all books
+                List<Book> bookList = bookDAO.getAllBooks();
+                request.setAttribute("books", bookList);
+                request.getRequestDispatcher("jsp/admin-books.jsp").forward(request, response);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.sendRedirect("jsp/admin.jsp?error=Something went wrong");
+        }
+    }
+
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
+        String action = request.getParameter("action");
+
+        try {
+            if ("add".equals(action)) {
+                String title = request.getParameter("title");
+                String author = request.getParameter("author");
+                String category = request.getParameter("category");
+                int quantity = Integer.parseInt(request.getParameter("quantity"));
+
+                Book book = new Book();
+                book.setTitle(title);
+                book.setAuthor(author);
+                book.setCategory(category);
+                book.setQuantity(quantity);
+
+                bookDAO.addBook(book);
+                response.sendRedirect("BookServlet");
+
+            } else if ("update".equals(action)) {
+                int id = Integer.parseInt(request.getParameter("id"));
+                String title = request.getParameter("title");
+                String author = request.getParameter("author");
+                String category = request.getParameter("category");
+                int quantity = Integer.parseInt(request.getParameter("quantity"));
+
+                Book book = new Book(id, title, author, category, quantity);
+                bookDAO.updateBook(book);
+                response.sendRedirect("BookServlet");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.sendRedirect("BookServlet?error=Operation failed");
+        }
+    }
+}

@@ -1,0 +1,122 @@
+package dao;
+
+import util.DBConnection;
+import model.Reservation;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
+
+public class ReservationDAO {
+
+    public int getTotalReservations() {
+        String sql = "SELECT COUNT(*) FROM reservations";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            if (rs.next()) return rs.getInt(1);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    // ✅ New method to get reservations for a specific user
+    public List<Reservation> getReservationsByUserId(int userId) {
+        List<Reservation> reservations = new ArrayList<>();
+
+        String sql = "SELECT r.id AS reservation_id, r.reserved_on, r.return_due, b.id AS book_id, b.title, b.author, b.category " +
+                "FROM reservations r JOIN books b ON r.book_id = b.id " +
+                "WHERE r.user_id = ? ORDER BY r.reserved_on DESC";
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, userId);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                Reservation res = new Reservation();
+                res.setId(rs.getInt("reservation_id")); // ✅ Correctly store reservation ID
+                res.setBookId(rs.getInt("book_id"));
+                res.setTitle(rs.getString("title"));
+                res.setAuthor(rs.getString("author"));
+                res.setCategory(rs.getString("category"));
+                res.setReservedOn(rs.getTimestamp("reserved_on"));
+                res.setReturnDue(rs.getTimestamp("return_due"));
+                reservations.add(res);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return reservations;
+    }
+    public List<String[]> getReservationCountByUsers() {
+        List<String[]> users = new ArrayList<>();
+        String sql = "SELECT u.full_name, COUNT(r.id) AS total " +
+                     "FROM reservations r JOIN users u ON r.user_id = u.id " +
+                     "GROUP BY r.user_id ORDER BY total DESC";
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                users.add(new String[]{rs.getString("full_name"), String.valueOf(rs.getInt("total"))});
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return users;
+    }
+    public String getMostActiveUser() {
+        String sql = "SELECT u.full_name, COUNT(r.id) AS total " +
+                     "FROM reservations r JOIN users u ON r.user_id = u.id " +
+                     "GROUP BY r.user_id ORDER BY total DESC LIMIT 1";
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            if (rs.next()) {
+                return rs.getString("full_name") + " (" + rs.getInt("total") + " reservations)";
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return "No reservations yet";
+    }
+
+    public List<String[]> getTopReservedBooks(int limit) {
+        List<String[]> topBooks = new ArrayList<>();
+        String sql = "SELECT b.title, COUNT(r.id) AS total " +
+                     "FROM reservations r JOIN books b ON r.book_id = b.id " +
+                     "GROUP BY b.title ORDER BY total DESC LIMIT ?";
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, limit);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                topBooks.add(new String[]{rs.getString("title"), String.valueOf(rs.getInt("total"))});
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return topBooks;
+    }
+
+}
