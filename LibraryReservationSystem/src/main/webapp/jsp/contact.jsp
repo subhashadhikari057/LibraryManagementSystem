@@ -1,0 +1,102 @@
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Contact Us - Library System</title>
+    <style>
+        body {
+            font-family: Arial;
+            background: #f4f7fa;
+            padding: 40px;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h2 {
+            color: #004aac;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .section {
+            margin-bottom: 30px;
+        }
+        .section h3 {
+            color: #004aac;
+            margin-bottom: 10px;
+        }
+        .section p {
+            line-height: 1.6;
+            color: #333;
+        }
+        .faq {
+            margin-top: 20px;
+        }
+        .faq h4 {
+            margin-bottom: 5px;
+            color: #003377;
+        }
+        .faq p {
+            margin-bottom: 15px;
+        }
+        .highlight {
+            font-weight: bold;
+            color: #004aac;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>Contact Information</h2>
+
+    <div class="section">
+        <h3>Main Department</h3>
+        <p>
+            <span class="highlight">Library & Information Services</span><br>
+            Herald College Kathmandu<br>
+            Naxal, Kathmandu, Nepal<br>
+            P.O. Box 12345
+        </p>
+    </div>
+
+    <div class="section">
+        <h3>Support & Helpline</h3>
+        <p>
+            Email: <a href="mailto:support@librarysystem.com">support@librarysystem.com</a><br>
+            Helpline: +977-1-5551234<br>
+            WhatsApp: +977-9812345678
+        </p>
+    </div>
+
+    <div class="section">
+        <h3>Office Hours</h3>
+        <p>
+            Sunday – Friday: 9:00 AM – 5:00 PM<br>
+            Saturday: Closed
+        </p>
+    </div>
+
+    <div class="section">
+        <h3>Frequently Asked Questions (FAQ)</h3>
+        <div class="faq">
+            <h4> How long can I keep a reserved book?</h4>
+            <p>All reserved books must be returned within 7 days. Overdue books may lead to penalties.</p>
+
+            <h4> Is there any fine for late returns?</h4>
+            <p>Yes, failure to return books on time may result in a temporary suspension of your borrowing privileges.</p>
+
+            <h4> Can I reserve multiple books at once?</h4>
+            <p>Yes, you can reserve multiple books if they are in stock. However, you cannot reserve the same book twice without returning the first copy.</p>
+
+            <h4> Where can I return books?</h4>
+            <p>Books must be returned to the main library desk during working hours.</p>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

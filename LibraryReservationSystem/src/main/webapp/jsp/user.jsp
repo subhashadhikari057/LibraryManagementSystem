@@ -63,6 +63,8 @@
 
     <a class="btn" href="view-available-books.jsp"> View Available Books</a>
     <a class="btn" href="my-reservations.jsp"> My Reservations</a>
+    <a class="btn" href="about.jsp"> About</a>
+	<a class="btn" href="contact.jsp"> Contact</a>
     <a class="btn" href="login.jsp"> Logout</a>
 </div>
 </body>

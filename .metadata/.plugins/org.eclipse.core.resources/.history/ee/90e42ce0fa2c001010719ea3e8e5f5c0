@@ -70,24 +70,11 @@
             color: black;
             font-weight: bold;
         }
-        .no-data {
-            text-align: center;
-            color: #777;
-            font-size: 18px;
-            margin-top: 30px;
-        }
     </style>
 </head>
 <body>
     <h2>My Reservations</h2>
 
-    <%
-        if (reservations.isEmpty()) {
-    %>
-        <p class="no-data">You haven't reserved any books yet.</p>
-    <%
-        } else {
-    %>
     <table>
         <tr>
             <th>Book Title</th>
@@ -96,6 +83,7 @@
             <th>Reserved On</th>
             <th>Return Due</th>
             <th>Action</th>
+            
         </tr>
         <%
             for (Reservation r : reservations) {
@@ -105,7 +93,7 @@
             <td><%= r.getAuthor() %></td>
             <td><%= r.getCategory() %></td>
             <td><%= sdf.format(r.getReservedOn()) %></td>
-            <td><%= sdf.format(r.getReturnDue()) %></td>
+<td><%= sdf.format(r.getReturnDue()) %></td>
             <td>
                 <form action="../UnreserveServlet" method="post">
                     <input type="hidden" name="reservationId" value="<%= r.getId() %>">
@@ -118,9 +106,6 @@
             }
         %>
     </table>
-    <%
-        }
-    %>
 
     <div class="back">
         <a href="user.jsp">Back to Dashboard</a>

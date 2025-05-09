@@ -2,34 +2,36 @@
 <%@ page session="true" %>
 <%
     User user = (User) session.getAttribute("user");
-    if (user == null || !"admin".equals(user.getRole())) {
+    if (user == null || !"user".equals(user.getRole())) {
         response.sendRedirect("login.jsp");
         return;
     }
 %>
-
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Admin Dashboard</title>
+    <title>User Dashboard</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background: #f0f4f8;
-            padding: 50px;
+            font-family: Arial;
+            padding: 40px;
+            background: #f4f7fa;
         }
-        .dashboard {
+        .card {
             max-width: 600px;
             margin: auto;
             background: white;
             border-radius: 10px;
             padding: 30px;
-            box-shadow: 0 0 8px rgba(0,0,0,0.1);
+            box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
             text-align: center;
         }
         h2 {
             color: #004aac;
+        }
+        p {
+            margin: 8px 0;
         }
         .btn {
             display: block;
@@ -54,17 +56,14 @@
     </style>
 </head>
 <body>
-    <div class="dashboard">
-        <h2>Welcome, <%= user.getFullName() %> (Admin)</h2>
-        <p>Select an action below:</p>
+<div class="card">
+    <h2>Welcome, <%= user.getFullName() %></h2>
+    <p>Email: <%= user.getEmail() %></p>
+    <p>You can view and reserve books below.</p>
 
-        <a class="btn" href="add-book.jsp">Add Book</a>
-        <a class="btn" href="view-books.jsp">View / Edit / Delete Books</a>
-        <a class="btn" href="report.jsp">View Reports</a>
-        <a class="btn" href="view-users.jsp">Manage Users</a>
-        <a class="btn" href="about.jsp">About</a>
-        <a class="btn" href="contact.jsp">Contact</a>
-        <a class="btn" href="login.jsp">Logout</a>
-    </div>
+    <a class="btn" href="view-available-books.jsp"> View Available Books</a>
+    <a class="btn" href="my-reservations.jsp"> My Reservations</a>
+    <a class="btn" href="login.jsp"> Logout</a>
+</div>
 </body>
 </html>
