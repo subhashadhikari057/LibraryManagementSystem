@@ -137,21 +137,20 @@
 </style>
 </head>
 <body>
+<div style="text-align: center; margin-top: 30px;">
+    <a href="../ExportCSVServlet" style="
+        background: #004aac;
+        color: white;
+        padding: 10px 20px;
+        text-decoration: none;
+        border-radius: 5px;
+        font-weight: bold;
+    ">
+        📥 Export All Reservations to CSV
+    </a>
+</div>
 
-<!-- Top Section -->
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-        <h2 style="color:#004aac; margin: 0;">Admin Reports</h2>
-        <a href="../ExportCSVServlet" style="
-            background: #004aac;
-            color: white;
-            padding: 10px 20px;
-            text-decoration: none;
-            border-radius: 5px;
-            font-weight: bold;
-        ">
-            Export All Reservations to CSV
-        </a>
-    </div>
+    <h2 style="text-align:center; color:#004aac;">Admin Reports</h2>
 
     <div class="report-container">
         <div class="card">

@@ -153,6 +153,11 @@
         </a>
     </div>
 
+
+
+    <h2 style="text-align:center; color:#004aac;">Admin Reports</h2>
+    
+
     <div class="report-container">
         <div class="card">
             <h3>Total Books</h3>

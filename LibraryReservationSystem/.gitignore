@@ -1,0 +1,9 @@
+*.class
+*.log
+*.war
+target/
+build/
+.idea/
+*.iml
+.DS_Store
+out/

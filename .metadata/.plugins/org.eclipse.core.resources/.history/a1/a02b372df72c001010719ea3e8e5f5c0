@@ -140,7 +140,7 @@
 
 <!-- Top Section -->
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-        <h2 style="color:#004aac; margin: 0;">Admin Reports</h2>
+        <h2 style="color:#004aac; margin: 0;"></h2>
         <a href="../ExportCSVServlet" style="
             background: #004aac;
             color: white;
@@ -152,6 +152,11 @@
             Export All Reservations to CSV
         </a>
     </div>
+
+
+
+    <h2 style="text-align:center; color:#004aac;">Admin Reports</h2>
+    
 
     <div class="report-container">
         <div class="card">

@@ -102,16 +102,5 @@
     <url-pattern>/UnreserveServlet</url-pattern>
 </servlet-mapping>
 
-<servlet>
-    <servlet-name>ExportCSVServlet</servlet-name>
-    <servlet-class>controller.ExportCSVServlet</servlet-class>
-</servlet>
-
-<servlet-mapping>
-    <servlet-name>ExportCSVServlet</servlet-name>
-    <url-pattern>/ExportCSVServlet</url-pattern>
-</servlet-mapping>
-
-
 
 </web-app>
