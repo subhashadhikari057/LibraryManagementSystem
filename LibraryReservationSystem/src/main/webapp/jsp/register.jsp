@@ -6,67 +6,108 @@
     <title>Register - Library System</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background: #f0f4f8;
             margin: 0;
             padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(to right, #002B36, #014421); /* dark green gradient */
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
+
         .register-container {
+            width: 100%;
             max-width: 450px;
-            margin: 80px auto;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(15px);
             padding: 30px;
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+            color: #ffffff;
         }
+
         h2 {
             text-align: center;
-            color: #004aac;
+            color: #e8f5e9;
+            margin-bottom: 20px;
         }
+
         label {
             display: block;
             margin-top: 15px;
             font-weight: bold;
+            color: #dcedc8;
         }
+
         input[type="text"],
         input[type="email"],
         input[type="password"] {
             width: 100%;
             padding: 10px;
             margin-top: 5px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-        }
-        button {
-            margin-top: 20px;
-            width: 100%;
-            background-color: #004aac;
-            color: white;
-            padding: 10px;
             border: none;
-            border-radius: 6px;
-            cursor: pointer;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.25);
+            color: #ffffff;
+            font-size: 14px;
+        }
+
+        input::placeholder {
+            color: #e0e0e0;
+        }
+
+        input:focus {
+            outline: 2px solid #66bb6a;
+        }
+
+        button {
+            margin-top: 25px;
+            width: 100%;
+            background-color: #1b5e20;
+            color: white;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
             font-size: 16px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.3s ease;
         }
+
         button:hover {
-            background-color: #003377;
+            background-color: #2e7d32;
         }
+
         .error, .success {
             margin-top: 15px;
             text-align: center;
             font-weight: bold;
         }
-        .error { color: red; }
-        .success { color: green; }
+
+        .error {
+            color: #ff6b6b;
+        }
+
+        .success {
+            color: #a8ff60;
+        }
+
+        p {
+            text-align: center;
+            margin-top: 20px;
+            color: #c8e6c9;
+        }
+
         a {
-    color: #004aac;
-    text-decoration: none;
-    font-weight: bold;
-}
-a:hover {
-    text-decoration: underline;
-}
-        
+            color: #a5d6a7;
+            text-decoration: underline;
+        }
+
+        a:hover {
+            color: #81c784;
+        }
     </style>
 </head>
 <body>
@@ -74,20 +115,21 @@ a:hover {
         <h2>Create Account</h2>
         <form action="../RegisterServlet" method="post">
             <label for="fullName">Full Name:</label>
-            <input type="text" name="fullName" required>
+            <input type="text" name="fullName" required placeholder="Enter your full name">
 
             <label for="email">Email:</label>
-            <input type="email" name="email" required>
+            <input type="email" name="email" required placeholder="Enter your email">
 
             <label for="password">Password:</label>
-            <input type="password" name="password" required>
+            <input type="password" name="password" required placeholder="Enter your password">
 
             <button type="submit">Register</button>
         </form>
-        <p style="text-align:center; margin-top: 20px;">
-    Already registered?
-    <a href="login.jsp">Login here</a>
-</p>
+
+        <p>
+            Already registered?
+            <a href="login.jsp">Login here</a>
+        </p>
 
         <% String msg = request.getParameter("msg");
            if ("exists".equals(msg)) { %>

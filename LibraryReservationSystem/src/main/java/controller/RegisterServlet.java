@@ -2,6 +2,7 @@ package controller;
 
 import dao.UserDAO;
 import model.User;
+import util.PasswordUtil; // 🔹 Make sure this import is added
 
 import javax.servlet.*;
 import javax.servlet.http.*;
@@ -13,7 +14,10 @@ public class RegisterServlet extends HttpServlet {
 
         String fullName = request.getParameter("fullName");
         String email = request.getParameter("email");
-        String password = request.getParameter("password");
+        String rawPassword = request.getParameter("password");
+
+        // 🔐 Hash the password
+        String hashedPassword = PasswordUtil.hashPassword(rawPassword);
 
         UserDAO userDAO = new UserDAO();
 
@@ -23,7 +27,7 @@ public class RegisterServlet extends HttpServlet {
             User user = new User();
             user.setFullName(fullName);
             user.setEmail(email);
-            user.setPassword(password);
+            user.setPassword(hashedPassword); // 🔐 Store hashed password
             user.setRole("user"); // default role
 
             boolean registered = userDAO.registerUser(user);

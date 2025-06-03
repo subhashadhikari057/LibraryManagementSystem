@@ -92,18 +92,34 @@ public class UserDAO {
     }
     
     public boolean deleteUserById(int id) {
-        String sql = "DELETE FROM users WHERE id = ?";
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+        String deleteReservationsSQL = "DELETE FROM reservations WHERE user_id = ?";
+        String deleteUserSQL = "DELETE FROM users WHERE id = ?";
 
-            stmt.setInt(1, id);
-            return stmt.executeUpdate() > 0;
+        try (Connection conn = DBConnection.getConnection()) {
+            conn.setAutoCommit(false); // Start transaction
 
+            try (PreparedStatement stmt1 = conn.prepareStatement(deleteReservationsSQL);
+                 PreparedStatement stmt2 = conn.prepareStatement(deleteUserSQL)) {
+
+                stmt1.setInt(1, id);
+                stmt1.executeUpdate();
+
+                stmt2.setInt(1, id);
+                int rowsAffected = stmt2.executeUpdate();
+
+                conn.commit(); // Commit both
+
+                return rowsAffected > 0;
+            } catch (Exception e) {
+                conn.rollback(); // Undo changes on error
+                e.printStackTrace();
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
         return false;
     }
+
     
     public boolean updateUserRole(int id, String role) {
         String sql = "UPDATE users SET role = ? WHERE id = ?";

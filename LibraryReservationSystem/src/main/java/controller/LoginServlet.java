@@ -2,6 +2,7 @@ package controller;
 
 import dao.UserDAO;
 import model.User;
+import util.PasswordUtil; // 🔹 Make sure to import this
 
 import javax.servlet.*;
 import javax.servlet.http.*;
@@ -12,10 +13,13 @@ public class LoginServlet extends HttpServlet {
             throws ServletException, IOException {
         
         String email = request.getParameter("email");
-        String password = request.getParameter("password");
+        String rawPassword = request.getParameter("password");
+
+        // 🔐 Hash the password entered by the user
+        String hashedPassword = PasswordUtil.hashPassword(rawPassword);
 
         UserDAO userDAO = new UserDAO();
-        User user = userDAO.authenticateUser(email, password);
+        User user = userDAO.authenticateUser(email, hashedPassword); // 🔐 compare hashed password
 
         if (user != null) {
             HttpSession session = request.getSession();
